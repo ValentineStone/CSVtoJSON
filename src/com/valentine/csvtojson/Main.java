@@ -1,5 +1,6 @@
 package com.valentine.csvtojson;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,40 +10,41 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.JFileChooser;
-
 public abstract class Main
 {
-	static final Scanner sysin = new Scanner(System.in);
-	
 	public static void main(String[] _args)
 	{
-		JFileChooser fileChoser = new JFileChooser();
-		
-		System.err.println("Welcome to CSV to JSON converter");
-		System.err.println("by Leonid Romanovky\n");
+		Interface.console("Welcome to CSV to JSON converter");
+		Interface.console("by Leonid Romanovky\n");
 		
 		while (true)
 		{
-			if (fileChoser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+			int filesProcessed = 0;
+			for (File file : Interface.selectFiles())
 			{
-				csvToJson(fileChoser.getSelectedFile().getAbsolutePath());
+				csvToJson(file.getAbsolutePath());
+				filesProcessed++;
 			}
-			else
+			if (filesProcessed == 0)
 			{
-				return;
+				Interface.console("No files selected");
+				if (Interface.ask("No files selected, quit?"))
+				{
+					return;
+				}
 			}
 		}
+		
 	}
 	
 	private static void csvToJson(String _sourceFilePathString)
 	{
-		System.err.println("CONVERTING");
+		Interface.console("CONVERTING");
 		
 		if (_sourceFilePathString.lastIndexOf(".csv") != _sourceFilePathString.length() - 4)
 		{
-			System.err.println("Invalid input, should be .scv file: \"" + _sourceFilePathString + '"');
-			System.err.println("FAILURE\n");
+			Interface.console("Invalid input, should be .scv file: \"" + _sourceFilePathString + '"');
+			Interface.console("FAILURE\n");
 			return;
 		}
 		
@@ -51,43 +53,35 @@ public abstract class Main
 		Path sourceFilePath = Paths.get(_sourceFilePathString);
 		Path targetFilePath = Paths.get(targetFilePathString);
 		
-		System.err.println("Source: \"" + sourceFilePath.toAbsolutePath().toString() + '"');
-		System.err.println("Target: \"" + targetFilePath.toAbsolutePath().toString() + '"');
+		Interface.console("Source: \"" + sourceFilePath.toAbsolutePath().toString() + '"');
+		Interface.console("Target: \"" + targetFilePath.toAbsolutePath().toString() + '"');
 		
 		if (Files.notExists(sourceFilePath))
 		{
-			System.err.println("Input file does not exist");
-			System.err.println("FAILURE\n");
+			Interface.console("Input file does not exist");
+			Interface.console("FAILURE\n");
 			return;
 		}
 		if (Files.exists(targetFilePath))
 		{
-			System.err.println("Output file already exists");
-			System.err.print("Override? (y/n) : ");
-			
-			switch (sysin.next().charAt(0))
+			if (Interface.ask("Output file already exists, override?"))
 			{
-				case 'n':
-				case 'N':
+				try
 				{
-					System.err.println("Skipping...");
-					System.err.println("FAILURE\n");
+					Files.delete(targetFilePath);
+				}
+				catch (IOException e)
+				{
+					Interface.console("Can't delete target file");
+					Interface.console("FAILURE\n");
 					return;
 				}
-				case 'y':
-				case 'Y':
-				{
-					try
-					{
-						Files.delete(targetFilePath);
-					}
-					catch (IOException e)
-					{
-						System.err.println("Can't delete target file");
-						System.err.println("FAILURE\n");
-						return;
-					}
-				}
+			}
+			else
+			{
+				Interface.console("Skipping...");
+				Interface.console("FAILURE\n");
+				return;
 			}
 		}
 		
@@ -97,8 +91,8 @@ public abstract class Main
 		}
 		catch (IOException e)
 		{
-			System.err.println("Can't create target file");
-			System.err.println("FAILURE\n");
+			Interface.console("Can't create target file");
+			Interface.console("FAILURE\n");
 			return;
 		}
 		
@@ -110,8 +104,8 @@ public abstract class Main
 		}
 		catch (IOException e)
 		{
-			System.err.println("Can't read source file");
-			System.err.println("FAILURE\n");
+			Interface.console("Can't read source file");
+			Interface.console("FAILURE\n");
 			e.printStackTrace();
 			return;
 		}
@@ -120,7 +114,7 @@ public abstract class Main
 		
 		String outputDataString = parseAndConvert(inputDataString);
 		
-		System.err.println("Processing...");
+		Interface.console("Processing...");
 		
 		try
 		{
@@ -128,12 +122,12 @@ public abstract class Main
 		}
 		catch (IOException e)
 		{
-			System.err.println("Problems writing to output file");
-			System.err.println("FAILURE\n");
+			Interface.console("Problems writing to output file");
+			Interface.console("FAILURE\n");
 			return;
 		}
 		
-		System.err.println("SUCCESS\n");
+		Interface.console("SUCCESS\n");
 	}
 	
 	private static String parseAndConvert(String _inputDataString)
