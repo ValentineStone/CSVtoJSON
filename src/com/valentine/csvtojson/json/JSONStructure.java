@@ -3,13 +3,15 @@ package com.valentine.csvtojson.json;
 import java.util.*;
 import java.util.Map.*;
 
-public class JSONStructure implements JSONObject, Iterable<Entry<String, JSONObject>>
+public class JSONStructure extends JSONObject implements Iterable<Entry<String, JSONObject>>
 {
 	private Map<String, JSONObject> fields;
 	
-	public JSONStructure()
+	public JSONStructure(int _csvLeftIndex)
 	{
-		fields = new HashMap<String, JSONObject>();
+		super(_csvLeftIndex);
+		
+		fields = new LinkedHashMap<String, JSONObject>();
 	}
 	
 	public void print()
@@ -29,6 +31,8 @@ public class JSONStructure implements JSONObject, Iterable<Entry<String, JSONObj
 			{
 				JSONPrinter.println(",");
 			}
+			
+			JSONPrinter.println(field.getKey() + ":");
 			field.getValue().print();
 		}
 		
@@ -53,7 +57,7 @@ public class JSONStructure implements JSONObject, Iterable<Entry<String, JSONObj
 	
 	public JSONStructure clone()
 	{
-		JSONStructure copy = new JSONStructure();
+		JSONStructure copy = new JSONStructure(getCsvLeftIndex());
 		for (Entry<String, JSONObject> field : this)
 		{
 			if (field.getValue() != null)

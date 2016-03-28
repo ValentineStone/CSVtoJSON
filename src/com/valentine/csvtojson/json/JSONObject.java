@@ -1,8 +1,22 @@
 package com.valentine.csvtojson.json;
 
-public interface JSONObject
+public abstract class JSONObject
 {
-	public void print();
+	int csvLeftIndex;
 	
-	public JSONObject clone();
+	public JSONObject(int _csvLeftIndex)
+	{
+		csvLeftIndex = _csvLeftIndex;
+		
+		System.err.println(this.getClass().getSimpleName() + " at " + getCsvLeftIndex());
+	}
+	
+	public abstract void print();
+	
+	public abstract JSONObject clone();
+	
+	public int getCsvLeftIndex()
+	{
+		return csvLeftIndex;
+	}
 }

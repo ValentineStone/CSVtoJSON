@@ -2,14 +2,20 @@ package com.valentine.csvtojson.json;
 
 import java.util.*;
 
-public class JSONData implements JSONObject
+public class JSONData extends JSONObject
 {
-	public static final JSONData EMPTY = new JSONData("");
+	//public static final JSONData EMPTY = new JSONData("");
 	
 	private String data;
 	
-	public JSONData(String _data)
+	public JSONData(int _csvLeftIndex)
 	{
+		this(null, _csvLeftIndex);
+	}
+	
+	public JSONData(String _data, int _csvLeftIndex)
+	{
+		super(_csvLeftIndex);
 		set(_data);
 	}
 
@@ -21,13 +27,26 @@ public class JSONData implements JSONObject
 			return;
 		}
 		
-		if (data.length() == 5 || data.length() == 4)
+		if (data.length() <= 6 || data.length() >= 4)
 		{
 			String dataLowercase = data.toLowerCase();
 			if (dataLowercase.equals("true") || dataLowercase.equals("false"))
 			{
 				JSONPrinter.println(dataLowercase);
 				return;
+			}
+			else
+			{
+				if (dataLowercase.equals("истина"))
+				{
+					JSONPrinter.println("true");
+					return;
+				}
+				else if (dataLowercase.equals("ложь"))
+				{
+					JSONPrinter.println("false");
+					return;
+				}
 			}
 		}
 		
@@ -41,7 +60,7 @@ public class JSONData implements JSONObject
 	
 	public JSONData clone()
 	{
-		return new JSONData(data);
+		return new JSONData(data, getCsvLeftIndex());
 	}
 	
 	public Iterator<JSONObject> iterator()

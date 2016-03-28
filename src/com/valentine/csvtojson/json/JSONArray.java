@@ -2,13 +2,15 @@ package com.valentine.csvtojson.json;
 
 import java.util.*;
 
-public class JSONArray implements JSONObject, Iterable<JSONObject>
+public class JSONArray extends JSONObject implements Iterable<JSONObject>
 {
 	private List<JSONObject> objects;
 	private JSONObject template;
 	
-	public JSONArray(JSONObject _template)
+	public JSONArray(JSONObject _template, int _csvLeftIndex)
 	{
+		super(_csvLeftIndex);
+		
 		objects = new ArrayList<JSONObject>();
 		setTemplate(_template);
 	}
@@ -17,6 +19,11 @@ public class JSONArray implements JSONObject, Iterable<JSONObject>
 	{
 		JSONPrinter.println("[");
 		JSONPrinter.indent();
+		
+		/*
+		JSONPrinter.println("prototype :");
+		template.print();
+		*/
 		
 		boolean isFirstElement = true;
 		
@@ -54,7 +61,7 @@ public class JSONArray implements JSONObject, Iterable<JSONObject>
 	
 	public JSONArray clone()
 	{
-		JSONArray copy = new JSONArray(getTemplate());
+		JSONArray copy = new JSONArray(getTemplate(), getCsvLeftIndex());
 		for (JSONObject object : this)
 		{
 			if (object != null)

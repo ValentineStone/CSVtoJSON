@@ -13,7 +13,7 @@ public abstract class Main
 		Interface.console.println("Welcome to CSV to JSON converter");
 		Interface.console.println("by Leonid Romanovky");
 		Interface.console.stroke();
-
+		
 		while (true)
 		{
 			int filesProcessed = 0;
@@ -33,6 +33,9 @@ public abstract class Main
 			}
 			Interface.console.stroke();
 		}
+		
+		//csvToJson("C:/Users/Valentine/Dropbox/Роман Леонид/Leonid's Test/struct.csv");
+		//csvToJson("C:/Users/Valentine/Desktop/zerg.csv");
 
 		Interface.console.println("Thanks for using Valentine's Solutions CSV to JSON converter!");
 	}
@@ -110,7 +113,19 @@ public abstract class Main
 			return;
 		}
 
-		String inputDataString = new String(inputDataBytes);
+		String inputDataString = new String();
+		
+		try
+		{
+			inputDataString = new String(inputDataBytes, "UTF-8");
+		}
+		catch (UnsupportedEncodingException _exception)
+		{
+			Interface.console.println("Can't decode source file");
+			Interface.console.println("FAILURE\n");
+			_exception.printStackTrace();
+			return;
+		}
 
 		String outputDataString = parseAndConvert(inputDataString);
 
@@ -118,7 +133,7 @@ public abstract class Main
 
 		try
 		{
-			Files.write(targetFilePath, outputDataString.getBytes());
+			Files.write(targetFilePath, outputDataString.getBytes("UTF-8"));
 		}
 		catch (IOException e)
 		{
@@ -132,7 +147,12 @@ public abstract class Main
 
 	private static String parseAndConvert(String _csvString)
 	{
-		CSVParser.parseStructure(CSVParser.disassemble(_csvString), 0, 0).print();
+		(new CSVParser(_csvString)).getObject().print();
+		
+		/*
+		Interface.console.println("Resulting JSON object:");
+		Interface.console.println(JSONPrinter.peek());
+		*/
 		
 		return JSONPrinter.pop();
 	}
