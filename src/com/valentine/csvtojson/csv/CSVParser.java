@@ -47,7 +47,7 @@ public class CSVParser
 
 	private JSONObject parseJSONObject(int _row, int _col, int _limit)
 	{
-		// System.err.println("[" + _row + "," + _col + "] : " + getCsv()[_row][_col] + " limited by " + _limit);
+		System.err.println("[" + _row + "," + _col + "] : " + getCsv()[_row][_col] + " limited by " + _limit);
 		
 		// check for left most elements to avoid array indexation errors
 		
@@ -197,7 +197,16 @@ public class CSVParser
 			{
 				if (!isCellEmpty(_row + i, _col))
 				{
-					thisIndex = Integer.parseInt(getCsv()[_row + i][_col]);
+					try
+					{
+						System.err.println("Array index \"" + getCsv()[_row + i][_col] + "\" at [" + (_row + i) + "," + _col + "]");
+						
+						thisIndex = Integer.parseInt(getCsv()[_row + i][_col]);
+					}
+					catch (NumberFormatException _exc)
+					{
+						continue;
+					}
 					
 					if (thisIndex - lastIndex == 1)
 					{
