@@ -7,6 +7,11 @@ public class JSONArray extends JSONObject implements Iterable<JSONObject>
 	private List<JSONObject> objects;
 	private JSONObject template;
 	
+	public JSONArray()
+	{
+		objects = new ArrayList<JSONObject>();
+	}
+	
 	public JSONArray(JSONObject _template, int _csvLeftIndex)
 	{
 		super(_csvLeftIndex);
@@ -27,17 +32,21 @@ public class JSONArray extends JSONObject implements Iterable<JSONObject>
 		
 		boolean isFirstElement = true;
 		
-		for (JSONObject field : this)
+		for (JSONObject object : this)
 		{
-			if (isFirstElement)
+
+			if (!object.isEmpty())
 			{
-				isFirstElement = false;
+				if (isFirstElement)
+				{
+					isFirstElement = false;
+				}
+				else
+				{
+					JSONPrinter.println(",");
+				}
+				object.print();
 			}
-			else
-			{
-				JSONPrinter.println(",");
-			}
-			field.print();
 		}
 		
 		JSONPrinter.outdent();
@@ -85,6 +94,18 @@ public class JSONArray extends JSONObject implements Iterable<JSONObject>
 	public void setTemplate(JSONObject _template)
 	{
 		template = _template;
+	}
+	
+	public boolean isEmpty()
+	{
+		for (JSONObject object : this)
+		{
+			if (!object.isEmpty())
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Iterator<JSONObject> iterator()

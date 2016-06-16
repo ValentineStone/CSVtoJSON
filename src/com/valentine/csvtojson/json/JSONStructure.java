@@ -7,6 +7,11 @@ public class JSONStructure extends JSONObject implements Iterable<Entry<String, 
 {
 	private Map<String, JSONObject> fields;
 	
+	public JSONStructure()
+	{
+		fields = new LinkedHashMap<String, JSONObject>();
+	}
+	
 	public JSONStructure(int _csvLeftIndex)
 	{
 		super(_csvLeftIndex);
@@ -23,17 +28,20 @@ public class JSONStructure extends JSONObject implements Iterable<Entry<String, 
 		
 		for (Entry<String, JSONObject> field : this)
 		{
-			if (isFirstElement)
+			if (!field.getValue().isEmpty())
 			{
-				isFirstElement = false;
+				if (isFirstElement)
+				{
+					isFirstElement = false;
+				}
+				else
+				{
+					JSONPrinter.println(",");
+				}
+				
+				JSONPrinter.println(field.getKey() + ":");
+				field.getValue().print();
 			}
-			else
-			{
-				JSONPrinter.println(",");
-			}
-			
-			JSONPrinter.println(field.getKey() + ":");
-			field.getValue().print();
 		}
 		
 		JSONPrinter.outdent();
@@ -71,6 +79,18 @@ public class JSONStructure extends JSONObject implements Iterable<Entry<String, 
 		}
 		
 		return copy;
+	}
+	
+	public boolean isEmpty()
+	{
+		for (Entry<String, JSONObject> field : this)
+		{
+			if (!field.getValue().isEmpty())
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public Iterator<Entry<String, JSONObject>> iterator()

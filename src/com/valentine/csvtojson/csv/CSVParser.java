@@ -119,24 +119,23 @@ public class CSVParser
 	
 	private JSONObject parseHeader()
 	{
-		if (countElementsInLIne(0) <= 1)
+		if (isArray(0, 0))
 		{
-			if (isArray(0, 0))
+			if (isCellEmpty(0, 0))
 			{
-				if (isCellEmpty(0, 0))
-				{
-					return new JSONArray(parseJSONObject(0, 1, getCsv()[0].length - 1), 0);
-				}
-				else
-				{
-					JSONStructure structure = new JSONStructure(0);
-					
-					structure.addField(getCsv()[0][0], new JSONArray(parseJSONObject(0, 1, getCsv()[0].length - 1), 0));
-					
-					return structure;
-				}
+				return new JSONArray(parseJSONObject(0, 1, getCsv()[0].length - 1), 0);
+			}
+			else
+			{
+				JSONStructure structure = new JSONStructure(0);
+				
+				structure.addField(getCsv()[0][0], new JSONArray(parseJSONObject(0, 1, getCsv()[0].length - 1), 0));
+				
+				return structure;
 			}
 		}
+		
+		System.err.println("Structure at root!");
 		
 		JSONStructure structure = new JSONStructure(0);
 		
@@ -300,7 +299,7 @@ public class CSVParser
 		return true;
 	}
 	
-	private int countElementsInLIne(int _row)
+	private int countElementsInLine(int _row)
 	{
 		int count = 0;
 		

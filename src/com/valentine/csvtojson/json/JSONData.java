@@ -21,6 +21,14 @@ public class JSONData extends JSONObject
 
 	public void print()
 	{
+		// a lot of specific code,, might be cool to create a formatter for data and just connect different ones.
+		
+		if (data == null)
+		{
+			JSONPrinter.println("null");
+			return;
+		}
+		
 		if (data.isEmpty())
 		{
 			JSONPrinter.println("null");
@@ -50,12 +58,27 @@ public class JSONData extends JSONObject
 			}
 		}
 		
+		if (data.equals("\" \""))
+		{
+			JSONPrinter.println("\"\"");
+			return;
+		}
+		
 		JSONPrinter.println(data);
 	}
 	
 	public void set(String _data)
 	{
 		data = _data == null ? "" : _data;
+	}
+	
+	public boolean isEmpty()
+	{
+		if (data == null)
+		{
+			return true;
+		}
+		return data.isEmpty();
 	}
 	
 	public JSONData clone()

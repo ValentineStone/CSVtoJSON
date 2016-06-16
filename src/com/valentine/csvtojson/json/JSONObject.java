@@ -2,13 +2,14 @@ package com.valentine.csvtojson.json;
 
 public abstract class JSONObject
 {
-	int csvLeftIndex;
+	int csvLeftIndex = 0;
+	
+	public JSONObject()
+	{}
 	
 	public JSONObject(int _csvLeftIndex)
 	{
 		csvLeftIndex = _csvLeftIndex;
-		
-		System.err.println(this.getClass().getSimpleName() + " at " + getCsvLeftIndex());
 	}
 	
 	public abstract void print();
@@ -19,4 +20,6 @@ public abstract class JSONObject
 	{
 		return csvLeftIndex;
 	}
+	
+	public abstract boolean isEmpty();
 }
