@@ -48,13 +48,43 @@ public class JSONParser
 			charRead = (char) intRead;
 			
 			if (Character.isWhitespace(intRead))
-				continue;
-			else if (charRead == '{')
 			{
-				_jsonObject = new JSONStructure();
-				
+				continue;
+			}
+			else if (charRead == '}')
+			{
+				return;
+			}
+			else {}
+		}
+	}
+	
+	private static String parseQuotedString(Reader _reader) throws IOException
+	{
+		StringBuilder stringBuilder = new StringBuilder("");
+		
+		int intRead;
+		char charRead;
+		
+		while (-1 != (intRead = _reader.read()))
+		{
+			charRead = (char) intRead;
+			
+			if (charRead == '"')
+			{
+				break;
+			}
+			else if (charRead == '\\')
+			{
+				_reader.read();
+			}
+			else
+			{
+				stringBuilder.append(charRead);
 			}
 		}
+		
+		return stringBuilder.toString();
 	}
 	
 	
